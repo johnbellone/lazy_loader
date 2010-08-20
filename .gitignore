@@ -2,3 +2,6 @@
 autom4te.cache
 *.log
 configure.scan
+configure
+config.status
+include/config.h
