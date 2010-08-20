@@ -4,8 +4,7 @@
 AC_PREREQ(2.59)
 AC_INIT([lazy_loader], [0.1], [jb@thunkbrightly.com])
 AC_CONFIG_SRCDIR([include/thunk/lazy_loader.hpp])
-AC_CONFIG_FILES([Makefile])
-AM_INIT_AUTOMAKE([1.9 foreign subdir-objects])
+AM_INIT_AUTOMAKE(lazy_loader, 2.6)
 
 # Checks for programs.
 AC_PROG_CXX
@@ -19,4 +18,4 @@ AC_C_CONST
 
 # Checks for library functions.
 
-AC_OUTPUT
+AC_OUTPUT(Makefile src/Makefile)
