@@ -1,5 +1,4 @@
 #include <lazyloader/lazyloader.hpp>
-#include <square.hpp>
 
 /**
  * @brief An example application object which contains lazyloaded
@@ -8,24 +7,34 @@
 class Application
 {
 public:
-  ~Application() { }
-  Application() : m_square() { }
+  /**
+   * @brief Destructor.
+   */
+  ~Application();
 
-  Application(const Application& r) : m_square(r.m_square) { }
+  /**
+   * @brief Default constructor.
+   */
+  Application()
+    : m_square()
+  {
 
-  void init() { }
+  }
 
-  void run() { }
+  /**
+   * @brief Copy constructor.
+   */
+  Application(const Application& app)
+  {
 
+  }
 private:
-  thunk::lazy_loader<Square> m_square;
+  LazyLoader<Square> m_square;
 };
 
 int main(int argc, char* argv[])
 {
-  Application app;
 
-  app.init();
-  
+
   return 0;
 }
