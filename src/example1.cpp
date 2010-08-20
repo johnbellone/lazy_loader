@@ -1,4 +1,4 @@
-#include <lazyloader/lazyloader.hpp>
+#include <thunk/lazyloader.hpp>
 
 /**
  * @brief An example application object which contains lazyloaded
@@ -29,7 +29,7 @@ public:
 
   }
 private:
-  LazyLoader<Square> m_square;
+  thunk::LazyLoader<Square> m_square;
 };
 
 int main(int argc, char* argv[])
