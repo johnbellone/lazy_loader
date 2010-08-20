@@ -54,7 +54,6 @@ public:
   template<class Y> boost::shared_ptr<T>* get() const;
   
 private:
-  
   boost::shared_ptr<T> m_impl;
 };
 
