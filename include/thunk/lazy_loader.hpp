@@ -34,77 +34,80 @@ namespace thunk {
 template<class T> class lazy_loader 
 {
 public:
-  typedef T loader_type;
+    typedef T loader_type;
 
-  ~lazy_loader();
-  lazy_loader(); 
+    ~lazy_loader();
+    lazy_loader(); 
 
-  template<class Y> lazy_loader(lazy_loader<Y> const& r); 
+    lazy_loader(const lazy_loader& r); 
 
-  lazy_loader& operator=(lazy_loader const& r); 
-  template<class Y> lazy_loader& operator=(lazy_loader<T> const& r); 
+    lazy_loader& operator=(lazy_loader const& r); 
+    lazy_loader& operator=(lazy_loader const& r); 
   
-  void reset(); 
+    void reset(); 
 
-  template<class Y> boost::shared_ptr<Y> object();
+    boost::shared_ptr<T> get() const;
 
-  template<class Y> boost::shared_ptr<Y>& operator*() const;
-  template<class Y> boost::shared_ptr<T>* operator&() const;
-  template<class Y> boost::shared_ptr<T>* operator->() const;
-  template<class Y> boost::shared_ptr<T>* get() const;
-  
+    boost::shared_ptr<T>& operator*() const;
+    boost::shared_ptr<T>* operator&() const;
+    boost::shared_ptr<T>& operator->() const;
 private:
-  boost::shared_ptr<T> m_impl;
+    boost::shared_ptr<T> m_impl;
 };
 
-lazy_loader::~lazy_loader()
+template<class T>
+lazy_loader<T>::~lazy_loader()
 {
 }
 
-lazy_loader::lazy_loader()
-  : m_impl(0)
+template<class T>
+lazy_loader<T>::lazy_loader()
+    : m_impl(0)
 {
 }
 
-lazy_loader::lazy_loader(const lazy_loader& r)
-  : m_impl(r.m_impl)
+template<class T>
+lazy_loader<T>::lazy_loader(const lazy_loader& r)
+    : m_impl(r.m_impl)
 {
 }
 
-void lazy_loader::reset()
+template<class T>
+void lazy_loader<T>::reset()
 {
-  if ( m_impl->get() != 0 )
+    if ( m_impl->get() != 0 )
     {
-      m_impl->reset();
+        m_impl->reset();
     }
 }
 
-template<typename Y>
-boost::shared_ptr<Y> lazy_loader::object() 
+template<class T>
+boost::shared_ptr<T> lazy_loader<T>::get() const
 {
-  if ( m_impl.get() == 0 )
-  {
-    // TODO: Execute the lazy loading process here.
-  }
-  return m_impl;
+    if ( m_impl.get() == 0 )
+    {
+        // TODO: Execute the lazy loading process here.
+    }
+
+    return m_impl;
 }
 
-template<typename Y>*
-boost::shared_ptr<Y> lazy_loader::operator&()
+template<typename T>
+boost::shared_ptr<T>& lazy_loader<T>::operator*() const
 {
-  return &object();
+    return *get();
 }
 
-template<typename Tp>&
-boost::shared_ptr<Tp> lazy_loader::operator->()
+template<typename T>
+boost::shared_ptr<T>* lazy_loader<T>::operator&() const
 {
-  return *object();
+    return &get();
 }
 
-template<typename Tp>&
-boost::shared_ptr<Tp> lazy_loader::operator*()
+template<typename T>
+boost::shared_ptr<T>& lazy_loader<T>::operator->() const
 {
-  return *object();
+    return *get();
 }
 
 } // end of thunk
