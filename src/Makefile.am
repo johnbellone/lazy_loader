@@ -1,6 +1,6 @@
 AM_CPPFLAGS = -Wall
 AM_CXXFLAGS = -I/usr/local/include -I/usr/include -I$(top_srcdir)/include
-AM_LFLAGS   = -L/usr/local/lib -L/usr/lib -L$(top_srcdir)/lib
+AM_LDFLAGS  = -L/usr/local/lib -L/usr/lib -L$(top_srcdir)/lib
 
 bin_PROGRAMS = example1
 example1_SOURCES = example1.cpp
