@@ -41,16 +41,16 @@ public:
 
     lazy_loader(const lazy_loader& r); 
 
-    lazy_loader& operator=(lazy_loader const& r); 
-    lazy_loader& operator=(lazy_loader const& r); 
+    lazy_loader& operator=(const lazy_loader& r); 
   
     void reset(); 
 
-    boost::shared_ptr<T> get() const;
-
-    boost::shared_ptr<T>& operator*() const;
-    boost::shared_ptr<T>* operator&() const;
-    boost::shared_ptr<T>& operator->() const;
+    T& get();
+    
+    T& operator()();
+    T& operator*();
+    T* operator&();
+    T* operator->();
 private:
     boost::shared_ptr<T> m_impl;
 };
@@ -62,7 +62,6 @@ lazy_loader<T>::~lazy_loader()
 
 template<class T>
 lazy_loader<T>::lazy_loader()
-    : m_impl(0)
 {
 }
 
@@ -75,39 +74,51 @@ lazy_loader<T>::lazy_loader(const lazy_loader& r)
 template<class T>
 void lazy_loader<T>::reset()
 {
-    if ( m_impl->get() != 0 )
+    if ( m_impl.get() != 0 )
     {
         m_impl->reset();
     }
 }
 
 template<class T>
-boost::shared_ptr<T> lazy_loader<T>::get() const
+T& lazy_loader<T>::get() 
 {
     if ( m_impl.get() == 0 )
     {
         m_impl = boost::shared_ptr<T>(new T());
     }
 
-    return m_impl;
+    return *m_impl;
 }
 
-template<typename T>
-boost::shared_ptr<T>& lazy_loader<T>::operator*() const
+template<class T>
+lazy_loader<T>& lazy_loader<T>::operator=(const lazy_loader& r)
 {
-    return *get();
+    return lazy_loader(r);
 }
 
-template<typename T>
-boost::shared_ptr<T>* lazy_loader<T>::operator&() const
+template<class T>
+T& lazy_loader<T>::operator()() 
+{
+    return get();
+}
+
+template<class T>
+T& lazy_loader<T>::operator*() 
+{
+    return get();
+}
+
+template<class T>
+T* lazy_loader<T>::operator&() 
 {
     return &get();
 }
 
-template<typename T>
-boost::shared_ptr<T>& lazy_loader<T>::operator->() const
+template<class T>
+T* lazy_loader<T>::operator->()
 {
-    return *get();
+    return &get();
 }
 
 } // end of thunk
