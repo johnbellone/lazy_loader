@@ -86,7 +86,7 @@ boost::shared_ptr<T> lazy_loader<T>::get() const
 {
     if ( m_impl.get() == 0 )
     {
-        // TODO: Execute the lazy loading process here.
+        m_impl = boost::shared_ptr<T>(new T());
     }
 
     return m_impl;
