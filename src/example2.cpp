@@ -16,8 +16,8 @@ public:
     {
     }
 
-    Unique(boost::uuids::nil_generator& gen)
-        : m_uuid(gen())
+    Unique(const boost::uuids::uuid& u)
+        : m_uuid(u)
     {
     }
 
@@ -29,14 +29,15 @@ private:
     boost::uuids::uuid m_uuid;
 };
 
-static void allocate(boost::shared_ptr<Unique>& impl)
+static void factory(boost::shared_ptr<Unique>& impl)
 {
-    impl = new Unique(boost::uuids::nil_generator());
+    impl = boost::shared_ptr<Unique>(
+        new Unique(boost::uuids::nil_uuid()) );
 }
 
 int main(int argc, char* argv[])
 {
-    thunk::lazy_loader<Unique> loader;
+    thunk::lazy_loader<Unique> loader(&factory);
 
     const boost::uuids::uuid& u = loader->uuid();
 

@@ -35,12 +35,12 @@ namespace thunk {
 template<class T> class lazy_loader 
 {
 public:
-    typedef T loader_type;
+    typedef boost::shared_ptr<T> impl_type;
+    typedef boost::function1<void, impl_type&> factory_type;
 
     ~lazy_loader();
     lazy_loader(); 
-    lazy_loader(boost::function<void, void*> f);
-    template<class Y> lazy_loader(Y const& e);
+    lazy_loader(factory_type f);
 
     lazy_loader(const lazy_loader& r); 
 
@@ -55,8 +55,8 @@ public:
     T* operator&();
     T* operator->();
 private:
-    boost::shared_ptr<T> m_impl;
-    boost::function<void, void*> m_factory;
+    impl_type m_impl;
+    factory_type m_factory;
 };
 
 template<class T>
@@ -66,18 +66,20 @@ lazy_loader<T>::~lazy_loader()
 
 template<class T>
 lazy_loader<T>::lazy_loader()
+    : m_impl()
+    , m_factory(0)
 {
 }
 
 template<class T>
 lazy_loader<T>::lazy_loader(const lazy_loader& r)
     : m_impl(r.m_impl)
-    , m_factory(0)
+    , m_factory(r.m_factory)
 {
 }
 
 template<class T>
-lazy_loader<T>::lazy_loader(boost::function<void, void&> f)
+lazy_loader<T>::lazy_loader(lazy_loader::factory_type f)
     : m_impl()
     , m_factory(f)
 {
@@ -99,7 +101,7 @@ T& lazy_loader<T>::get()
     {
         if ( m_factory.empty() )
         {
-            m_impl = boost::shared_ptr<T>(new T());
+            m_impl = typename lazy_loader::impl_type(new T());
         }
         else
         {
