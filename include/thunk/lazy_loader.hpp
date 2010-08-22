@@ -28,6 +28,7 @@
  */
 
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
 
 namespace thunk {
 
@@ -38,6 +39,8 @@ public:
 
     ~lazy_loader();
     lazy_loader(); 
+    lazy_loader(boost::function<void, void*> f);
+    template<class Y> lazy_loader(Y const& e);
 
     lazy_loader(const lazy_loader& r); 
 
@@ -53,6 +56,7 @@ public:
     T* operator->();
 private:
     boost::shared_ptr<T> m_impl;
+    boost::function<void, void*> m_factory;
 };
 
 template<class T>
@@ -68,6 +72,14 @@ lazy_loader<T>::lazy_loader()
 template<class T>
 lazy_loader<T>::lazy_loader(const lazy_loader& r)
     : m_impl(r.m_impl)
+    , m_factory(0)
+{
+}
+
+template<class T>
+lazy_loader<T>::lazy_loader(boost::function<void, void&> f)
+    : m_impl()
+    , m_factory(f)
 {
 }
 
@@ -85,7 +97,14 @@ T& lazy_loader<T>::get()
 {
     if ( m_impl.get() == 0 )
     {
-        m_impl = boost::shared_ptr<T>(new T());
+        if ( m_factory.empty() )
+        {
+            m_impl = boost::shared_ptr<T>(new T());
+        }
+        else
+        {
+            m_factory(m_impl);
+        }
     }
 
     return *m_impl;
